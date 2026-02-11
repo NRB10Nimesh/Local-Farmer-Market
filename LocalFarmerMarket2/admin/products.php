@@ -1,5 +1,5 @@
 <?php
-// admin/products.php - Updated with Soft Delete and Commission Logic
+// admin/products.php - Updated with Soft Deletes and Commission logic
 session_start();
 
 if (!isset($_SESSION['admin_id'])) {
@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     elseif ($_POST['action'] === 'delete_product') {
         $product_id = intval($_POST['product_id']);
         
-        // FIXED: SOFT DELETE
+        // SOFT DELETE: Mark as inactive instead of deleting
         $stmt = $conn->prepare("UPDATE products SET is_active = 0, deleted_at = NOW() WHERE product_id = ?");
         if (!$stmt) {
             $errors[] = "Failed to prepare delete: " . $conn->error;
@@ -187,7 +187,7 @@ $sql = "SELECT p.*, f.name as farmer_name, f.contact as farmer_contact,
         (p.total_stock - p.quantity) as total_sold
         FROM products p 
         JOIN farmer f ON p.farmer_id = f.farmer_id 
-        WHERE (p.deleted_at IS NULL AND p.is_active = 1)"; // FIXED: Exclude soft-deleted
+        WHERE (p.deleted_at IS NULL AND p.is_active = 1)"; // Ensure deleted items are hidden
 
 $params = [];
 $types = "";
@@ -234,7 +234,7 @@ $categories = $conn->query("SELECT DISTINCT p.category, COALESCE(cs.default_comm
                             LEFT JOIN commission_settings cs ON p.category = cs.category 
                             ORDER BY p.category")->fetch_all(MYSQLI_ASSOC);
 
-// Get statistics with commission calculations
+// Get statistics with commission calculations (Added is_active = 1 check)
 $stats = [
     'pending' => $conn->query("SELECT COUNT(*) as c FROM products WHERE approval_status = 'pending' AND is_active = 1")->fetch_assoc()['c'],
     'approved' => $conn->query("SELECT COUNT(*) as c FROM products WHERE approval_status = 'approved' AND is_active = 1")->fetch_assoc()['c'],
@@ -242,7 +242,7 @@ $stats = [
     'low_stock' => $conn->query("SELECT COUNT(*) as c FROM products WHERE quantity < 10 AND approval_status = 'approved' AND is_active = 1")->fetch_assoc()['c']
 ];
 
-// Calculate commission stats
+// Calculate commission stats (Added is_active = 1 check)
 $commission_query = "SELECT 
     SUM((admin_price - price) * quantity) as potential_commission,
     AVG(commission_rate) as avg_commission_rate,
