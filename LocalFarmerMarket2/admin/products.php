@@ -1,5 +1,5 @@
 <?php
-// admin/products.php - Updated with commission system
+// admin/products.php - Updated with Soft Delete and Commission Logic
 session_start();
 
 if (!isset($_SESSION['admin_id'])) {
@@ -158,7 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     elseif ($_POST['action'] === 'delete_product') {
         $product_id = intval($_POST['product_id']);
         
-        $stmt = $conn->prepare("DELETE FROM products WHERE product_id = ?");
+        // FIXED: SOFT DELETE
+        $stmt = $conn->prepare("UPDATE products SET is_active = 0, deleted_at = NOW() WHERE product_id = ?");
         if (!$stmt) {
             $errors[] = "Failed to prepare delete: " . $conn->error;
         } else {
@@ -186,7 +187,7 @@ $sql = "SELECT p.*, f.name as farmer_name, f.contact as farmer_contact,
         (p.total_stock - p.quantity) as total_sold
         FROM products p 
         JOIN farmer f ON p.farmer_id = f.farmer_id 
-        WHERE 1=1";
+        WHERE (p.deleted_at IS NULL AND p.is_active = 1)"; // FIXED: Exclude soft-deleted
 
 $params = [];
 $types = "";
@@ -235,10 +236,10 @@ $categories = $conn->query("SELECT DISTINCT p.category, COALESCE(cs.default_comm
 
 // Get statistics with commission calculations
 $stats = [
-    'pending' => $conn->query("SELECT COUNT(*) as c FROM products WHERE approval_status = 'pending'")->fetch_assoc()['c'],
-    'approved' => $conn->query("SELECT COUNT(*) as c FROM products WHERE approval_status = 'approved'")->fetch_assoc()['c'],
-    'rejected' => $conn->query("SELECT COUNT(*) as c FROM products WHERE approval_status = 'rejected'")->fetch_assoc()['c'],
-    'low_stock' => $conn->query("SELECT COUNT(*) as c FROM products WHERE quantity < 10 AND approval_status = 'approved'")->fetch_assoc()['c']
+    'pending' => $conn->query("SELECT COUNT(*) as c FROM products WHERE approval_status = 'pending' AND is_active = 1")->fetch_assoc()['c'],
+    'approved' => $conn->query("SELECT COUNT(*) as c FROM products WHERE approval_status = 'approved' AND is_active = 1")->fetch_assoc()['c'],
+    'rejected' => $conn->query("SELECT COUNT(*) as c FROM products WHERE approval_status = 'rejected' AND is_active = 1")->fetch_assoc()['c'],
+    'low_stock' => $conn->query("SELECT COUNT(*) as c FROM products WHERE quantity < 10 AND approval_status = 'approved' AND is_active = 1")->fetch_assoc()['c']
 ];
 
 // Calculate commission stats
@@ -247,7 +248,7 @@ $commission_query = "SELECT
     AVG(commission_rate) as avg_commission_rate,
     SUM(admin_price * quantity) as total_value
     FROM products 
-    WHERE approval_status = 'approved' AND admin_price IS NOT NULL";
+    WHERE approval_status = 'approved' AND admin_price IS NOT NULL AND is_active = 1";
 $commission_stats = $conn->query($commission_query)->fetch_assoc();
 
 include 'includes/header.php';
@@ -258,7 +259,6 @@ include 'includes/header.php';
   <div class="main-content">
   <div style="max-width:1400px;margin:0 auto">
     
-    <!-- Statistics Cards -->
     <div style="display:flex;gap:16px;margin-bottom:24px;flex-wrap:nowrap;overflow-x:auto;align-items:stretch">
       <div class="card" style="background:#fef3c7;border-left:4px solid #f59e0b;min-width:200px;flex:1 0 200px">
         <div class="small-muted">⏳ Pending Approval</div>
@@ -280,7 +280,6 @@ include 'includes/header.php';
         <div style="font-size:2rem;font-weight:700;color:#3b82f6"><?php echo $stats['low_stock']; ?></div>
       </div>
 
-      <!-- Kept with the upper cards so all stats are visually grouped -->
       <div class="card" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%);color:white;min-width:220px;flex:1 0 220px">
         <div class="small" style="opacity:0.9">💰 Potential Commission</div>
         <div style="font-size:1.5rem;font-weight:700;margin:4px 0">
@@ -292,7 +291,6 @@ include 'includes/header.php';
       </div>
     </div>
 
-    <!-- Main Content -->
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
         <h2 style="margin:0">📦 Product Management</h2>
@@ -309,7 +307,6 @@ include 'includes/header.php';
         <div class="alert alert-danger"><?php echo htmlspecialchars($err); ?></div>
       <?php endforeach; ?>
 
-      <!-- Filters -->
       <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
         <input type="text" id="searchInput" placeholder="Search products or farmers..." 
                value="<?php echo htmlspecialchars($search); ?>"
@@ -339,7 +336,6 @@ include 'includes/header.php';
         <?php endif; ?>
       </div>
 
-      <!-- Products List -->
       <?php if (!empty($products)): ?>
         <div style="overflow-x:auto">
           <table class="table-compact" style="width:100%;border-collapse:collapse">
@@ -448,7 +444,6 @@ include 'includes/header.php';
 </div>
 </div>
 
-<!-- Approve Product Modal -->
 <div id="approveModal" class="modal">
   <div class="modal-body">
     <h3>Approve Product</h3>
@@ -472,7 +467,6 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- Reject Product Modal -->
 <div id="rejectModal" class="modal">
   <div class="modal-body">
     <h3>Reject Product</h3>
@@ -491,7 +485,6 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- Update Commission Modal -->
 <div id="commissionModal" class="modal">
   <div class="modal-body">
     <h3>Update Commission Rate</h3>
@@ -516,7 +509,6 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- Update Stock Modal -->
 <div id="stockModal" class="modal">
   <div class="modal-body">
     <h3>Update Stock Quantity</h3>
@@ -604,6 +596,4 @@ function applyFilters() {
   }
 
 });
-
-
-
+</script>
