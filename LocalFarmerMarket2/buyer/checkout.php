@@ -1,5 +1,5 @@
 <?php
-// buyer/checkout.php - FIXED: Removed duplicate revenue insertion
+// buyer/checkout.php - Updated to fix Phantom Revenue bug
 session_start();
 
 if (!isset($_SESSION['buyer_id'])) {
@@ -55,20 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->begin_transaction();
         
         try {
-            // Calculate total, commission and farmer payout using commission_rate
+            // Calculate total amount
             $total_amount = 0;
-            $total_commission = 0;
-            $total_farmer_amount = 0;
             
             foreach ($cart_items as $item) {
                 $item_total = $item['admin_price'] * $item['quantity'];
-                $commission_rate = isset($item['commission_rate']) ? $item['commission_rate'] : 0.0;
-                $item_commission = ($commission_rate / 100.0) * ($item['admin_price'] * $item['quantity']);
-                $item_farmer_amount = ($item['admin_price'] * $item['quantity']) - $item_commission;
-                
                 $total_amount += $item_total;
-                $total_commission += $item_commission;
-                $total_farmer_amount += $item_farmer_amount;
             }
             
             // Create order
@@ -79,12 +71,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $order_id = $conn->insert_id;
             $order_stmt->close();
             
-            // Insert order details ONLY (Revenue is now handled by DB trigger on completion)
+            // Insert order details (REMOVED: admin_revenue insertion - handled by DB trigger now)
             $detail_stmt = $conn->prepare("INSERT INTO order_details (order_id, product_id, quantity, price, farmer_price, admin_price, profit_per_unit) 
                                           VALUES (?, ?, ?, ?, ?, ?, ?)");
             
             foreach ($cart_items as $item) {
-                // Insert order detail (include farmer/admin price and profit per unit)
+                // Insert order detail
                 $profit_per_unit = ($item['admin_price'] - $item['farmer_price']);
                 $detail_stmt->bind_param("iiidddd", 
                     $order_id, 
@@ -120,9 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Redirect to success page
             $_SESSION['order_success'] = [
                 'order_id' => $order_id,
-                'total_amount' => $total_amount,
-                'commission_earned' => $total_commission,
-                'farmer_payment' => $total_farmer_amount
+                'total_amount' => $total_amount
             ];
             
             header("Location: order_success.php?order_id=" . $order_id);
