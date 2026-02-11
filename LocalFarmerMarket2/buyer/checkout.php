@@ -1,5 +1,5 @@
 <?php
-// buyer/checkout_process.php - Updated to track commissions
+// buyer/checkout.php - FIXED: Removed duplicate revenue insertion
 session_start();
 
 if (!isset($_SESSION['buyer_id'])) {
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $total_farmer_amount += $item_farmer_amount;
             }
             
-            // Create order (use delivery_notes column from schema)
+            // Create order
             $order_stmt = $conn->prepare("INSERT INTO orders (buyer_id, delivery_notes, payment_method, total_amount, status) 
                                          VALUES (?, ?, ?, ?, 'Pending')");
             $order_stmt->bind_param("issd", $buyer_id, $delivery_address, $payment_method, $total_amount);
@@ -79,13 +79,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $order_id = $conn->insert_id;
             $order_stmt->close();
             
-            // Insert order details and track commission
+            // Insert order details ONLY (Revenue is now handled by DB trigger on completion)
             $detail_stmt = $conn->prepare("INSERT INTO order_details (order_id, product_id, quantity, price, farmer_price, admin_price, profit_per_unit) 
                                           VALUES (?, ?, ?, ?, ?, ?, ?)");
-            
-            $revenue_stmt = $conn->prepare("INSERT INTO admin_revenue 
-                                           (order_id, order_detail_id, product_id, quantity, farmer_price, admin_price, profit_per_unit, profit_amount, commission_rate, commission_amount, farmer_final_amount) 
-                                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             
             foreach ($cart_items as $item) {
                 // Insert order detail (include farmer/admin price and profit per unit)
@@ -100,29 +96,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $profit_per_unit
                 );
                 $detail_stmt->execute();
-                $order_detail_id = $conn->insert_id;
-                
-                // Calculate commission and profit values
-                $commission_rate = isset($item['commission_rate']) ? $item['commission_rate'] : 0.0;
-                $profit_amount = $profit_per_unit * $item['quantity'];
-                $commission_amount = ($commission_rate / 100.0) * ($item['admin_price'] * $item['quantity']);
-                $farmer_final_amount = ($item['admin_price'] * $item['quantity']) - $commission_amount;
-                
-                // Track revenue with commission (match schema columns and types)
-                $revenue_stmt->bind_param("iiiiddddddd",
-                    $order_id,
-                    $order_detail_id,
-                    $item['product_id'],
-                    $item['quantity'],
-                    $item['farmer_price'],
-                    $item['admin_price'],
-                    $profit_per_unit,
-                    $profit_amount,
-                    $commission_rate,
-                    $commission_amount,
-                    $farmer_final_amount
-                );
-                $revenue_stmt->execute();
                 
                 // Update product stock
                 $update_stock = $conn->prepare("UPDATE products 
@@ -134,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             $detail_stmt->close();
-            $revenue_stmt->close();
             
             // Clear cart
             $clear_cart = $conn->prepare("DELETE FROM cart WHERE buyer_id = ?");
@@ -212,7 +184,6 @@ include 'includes/header.php';
     <?php endif; ?>
 
     <div class="checkout-grid">
-        <!-- Left: Buyer Profile -->
         <aside class="buyer-info">
             <h2>Delivery Information</h2>
             <?php if ($profile): ?>
@@ -222,7 +193,6 @@ include 'includes/header.php';
             <?php endif; ?>
         </aside>
 
-        <!-- Right: Form & Order Summary -->
         <section class="checkout-main">
             <form method="POST" action="">
                 <div class="form-group">
@@ -241,7 +211,6 @@ include 'includes/header.php';
                     </select>
                 </div>
 
-                <!-- Cart Items Summary -->
                 <div class="cart-summary">
                     <h2>Order Summary</h2>
                     <?php if (!empty($cart_items)): ?>
