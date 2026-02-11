@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 11, 2026 at 03:47 PM
+-- Generation Time: Feb 11, 2026 at 06:58 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -89,7 +89,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`admin_id`, `username`, `password_hash`, `email`, `full_name`, `is_active`, `login_attempts`, `last_login_attempt`, `last_login`, `created_at`) VALUES
-(1, 'admin', '$2y$10$WI9Lg8omPqKXdOnMP0Vdu.8Dr4/WpE1TPQOLK8v3AZV0GgERF4Zsu', 'admin@farmermarket.com', 'Administrator', 1, 0, NULL, '2026-02-11 18:18:49', '2026-01-06 04:18:10');
+(1, 'admin', '$2y$10$WI9Lg8omPqKXdOnMP0Vdu.8Dr4/WpE1TPQOLK8v3AZV0GgERF4Zsu', 'admin@farmermarket.com', 'Administrator', 1, 0, NULL, '2026-02-11 22:27:51', '2026-01-06 04:18:10');
 
 -- --------------------------------------------------------
 
@@ -136,9 +136,11 @@ CREATE TABLE `admin_revenue` (
   `quantity` int(11) NOT NULL,
   `farmer_price` decimal(10,2) NOT NULL,
   `admin_price` decimal(10,2) NOT NULL,
+  `profit_per_unit` decimal(10,2) DEFAULT 0.00,
   `profit_amount` decimal(10,2) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `commission_rate` decimal(5,2) NOT NULL COMMENT 'Commission % applied',
+  `commission_per_unit` decimal(10,2) DEFAULT 0.00,
   `commission_amount` decimal(10,2) NOT NULL COMMENT 'Actual commission earned',
   `farmer_final_amount` decimal(10,2) NOT NULL COMMENT 'Amount farmer receives after commission'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -147,9 +149,11 @@ CREATE TABLE `admin_revenue` (
 -- Dumping data for table `admin_revenue`
 --
 
-INSERT INTO `admin_revenue` (`revenue_id`, `order_id`, `order_detail_id`, `product_id`, `quantity`, `farmer_price`, `admin_price`, `profit_amount`, `created_at`, `commission_rate`, `commission_amount`, `farmer_final_amount`) VALUES
-(4, 55, 0, 19, 2, 200.00, 214.00, 28.00, '2026-02-08 11:34:16', 0.00, 0.00, 0.00),
-(6, 55, 58, 19, 2, 200.00, 214.00, 28.00, '2026-02-11 09:37:40', 0.00, 0.00, 0.00);
+INSERT INTO `admin_revenue` (`revenue_id`, `order_id`, `order_detail_id`, `product_id`, `quantity`, `farmer_price`, `admin_price`, `profit_per_unit`, `profit_amount`, `created_at`, `commission_rate`, `commission_per_unit`, `commission_amount`, `farmer_final_amount`) VALUES
+(4, 55, 0, 19, 2, 200.00, 214.00, 0.00, 28.00, '2026-02-08 11:34:16', 0.00, 0.00, 0.00, 0.00),
+(6, 55, 58, 19, 2, 200.00, 214.00, 0.00, 28.00, '2026-02-11 09:37:40', 0.00, 0.00, 0.00, 0.00),
+(7, 60, 64, 24, 10, 25.00, 26.55, 1.55, 15.50, '2026-02-11 15:46:07', 6.20, 0.00, 16.46, 249.04),
+(8, 61, 65, 19, 2, 200.00, 214.00, 14.00, 28.00, '2026-02-11 16:15:35', 7.00, 0.00, 29.96, 398.04);
 
 -- --------------------------------------------------------
 
@@ -177,7 +181,8 @@ INSERT INTO `buyer` (`buyer_id`, `name`, `contact`, `address`, `password`, `crea
 (7, 'Nimesh pokharel', '9800887555', 'nakhhu-karagar', '$2y$10$ZgTZ7C0aB2yKEIgo6rLeB.ADC6C6e2rJAAnRBgHlXz0hA0kTGSJtC', '2026-01-03 14:29:57', 1),
 (8, 'retry', '9866091234', 'lalitpur-nepal', '$2y$10$5coXx388rXsYvu9MhyryfOYJIyhL98ISefaqwq./vujldwS9nfvXq', '2026-01-06 13:39:46', 1),
 (9, 'Nimesh Ranabhattt', '9866091565', 'lalitpur-nepal', '$2y$10$qoIvLjxURcTgpiOVyIjcoO3UNFxRuflWmnpWcT1WBHBA/kW6AjlNK', '2026-01-18 14:39:08', 1),
-(10, 'Anish shahi', '9857457644', 'bolache-bhaktapur', '$2y$10$CBPzhdk4VMI8BUv3UNCSievSMDxzkbykZ.JPXW9hirRe03VQkRitW', '2026-02-09 12:38:26', 1);
+(10, 'Anish shahi', '9857457644', 'bolache-bhaktapur', '$2y$10$CBPzhdk4VMI8BUv3UNCSievSMDxzkbykZ.JPXW9hirRe03VQkRitW', '2026-02-09 12:38:26', 1),
+(11, 'Nimesh Pokharell', '9866078898', 'Kaushaltar-uskomanma', '$2y$10$4px5CStjlsZpkJm7Vyps4.Cdn9/4dUp/ZiSBBAAWCrkwBZvQ/xmW6', '2026-02-11 15:37:14', 1);
 
 -- --------------------------------------------------------
 
@@ -192,13 +197,6 @@ CREATE TABLE `cart` (
   `quantity` int(11) NOT NULL CHECK (`quantity` > 0),
   `added_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `cart`
---
-
-INSERT INTO `cart` (`cart_id`, `buyer_id`, `product_id`, `quantity`, `added_at`) VALUES
-(63, 4, 19, 2, '2026-02-11 08:23:29');
 
 -- --------------------------------------------------------
 
@@ -293,7 +291,8 @@ INSERT INTO `farmer` (`farmer_id`, `name`, `contact`, `address`, `farm_type`, `p
 (9, 'gaurav', '9848393939', 'lalitpur-nepal', 'fruits.fd', '$2y$10$V5IObo//mSJWalYtfe4vLeoFJ6O19NggJVG.Ynanh3ZgOPtRgdjX2', '2025-12-15 13:30:55', 1),
 (10, 'nimesh rana', '9866091917', 'lalitpur-nepal', 'MIxed', '$2y$10$yYtwvGXbxBgZQHA74TkAvOsDH0gnIIjud5h1lDWTK9E5UnzWFSgx6', '2025-12-19 15:11:25', 1),
 (11, 'narin', '9876548459', 'nepal-nepal', 'fruits', '$2y$10$sXS0ePtl1.CjPVl9FZYE5uZIXduVwNB1sH8dYrXXPvlRM3y9H8Kiy', '2025-12-22 14:13:18', 1),
-(14, 'Nimesh Ranabhat', '9866091932', 'lalitpur-nepal', 'vegetable', '$2y$10$gqdVFQXxrlSPIervBCrufuFcncggyIHyozOlsF.NN78VJLoqPNhie', '2026-01-06 13:35:15', 1);
+(14, 'Nimesh Ranabhat', '9866091932', 'lalitpur-nepal', 'vegetable', '$2y$10$gqdVFQXxrlSPIervBCrufuFcncggyIHyozOlsF.NN78VJLoqPNhie', '2026-01-06 13:35:15', 1),
+(15, 'GauravG', '9687569875', 'ekantakuna-lalitpur', 'Poultry', '$2y$10$bjmdbz9I7vdqQa9KNR989OaHCk5uEHo7.88O.SQDjIy107SBi2XJa', '2026-02-11 15:24:35', 1);
 
 -- --------------------------------------------------------
 
@@ -381,7 +380,9 @@ INSERT INTO `notifications` (`notification_id`, `user_type`, `user_id`, `title`,
 (63, 'farmer', 10, 'New Order', 'New order #55 received for apple', 0, '2026-02-08 11:34:16'),
 (64, 'farmer', 10, 'New Order', 'New order #55 received for apple', 0, '2026-02-08 11:34:16'),
 (65, 'buyer', 4, 'Order Update', 'Your order #55 status changed to: Completed', 0, '2026-02-11 09:37:40'),
-(66, 'farmer', 10, 'Product Approved', 'Your product #22 has been approved at Rs262.5 (Commission: 5%).', 0, '2026-02-11 12:45:21');
+(66, 'farmer', 10, 'Product Approved', 'Your product #22 has been approved at Rs262.5 (Commission: 5%).', 0, '2026-02-11 12:45:21'),
+(67, 'farmer', 15, 'Product Approved', 'Your product #24 has been approved at Rs26.55 (Commission: 6.2%).', 0, '2026-02-11 15:35:43'),
+(68, 'farmer', 15, 'Product Approved', 'Your product #23 has been approved at Rs318 (Commission: 6%).', 0, '2026-02-11 15:36:01');
 
 -- --------------------------------------------------------
 
@@ -391,7 +392,7 @@ INSERT INTO `notifications` (`notification_id`, `user_type`, `user_id`, `title`,
 
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
-  `buyer_id` int(11) NOT NULL,
+  `buyer_id` int(11) DEFAULT NULL,
   `total_amount` decimal(10,2) NOT NULL,
   `order_date` datetime DEFAULT current_timestamp(),
   `status` enum('Pending','Processing','Completed','Cancelled') DEFAULT 'Pending',
@@ -454,7 +455,9 @@ INSERT INTO `orders` (`order_id`, `buyer_id`, `total_amount`, `order_date`, `sta
 (47, 4, 800.00, '2026-01-10 11:44:06', 'Pending', 'bank_transfer', 'pending', NULL, '', '2026-01-10 05:59:06', NULL, NULL, NULL),
 (48, 4, 20000.00, '2026-01-10 20:56:12', 'Pending', 'bank_transfer', 'pending', NULL, '', '2026-01-10 15:11:12', NULL, NULL, NULL),
 (49, 4, 450.00, '2026-01-14 16:12:30', 'Completed', 'esewa', 'pending', NULL, '', '2026-02-07 12:26:14', NULL, NULL, NULL),
-(55, 4, 1284.00, '2026-02-08 17:19:16', 'Completed', 'cash_on_delivery', 'pending', NULL, NULL, '2026-02-11 09:37:40', NULL, NULL, NULL);
+(55, 4, 1284.00, '2026-02-08 17:19:16', 'Completed', 'cash_on_delivery', 'pending', NULL, NULL, '2026-02-11 09:37:40', NULL, NULL, NULL),
+(60, 11, 265.50, '2026-02-11 21:31:07', 'Pending', 'cash_on_delivery', 'pending', NULL, 'Kaushaltar-uskomanma', '2026-02-11 15:46:07', NULL, NULL, NULL),
+(61, 4, 428.00, '2026-02-11 22:00:35', 'Pending', 'esewa', 'pending', NULL, 'lalitpur-nepal', '2026-02-11 16:15:35', NULL, NULL, NULL);
 
 --
 -- Triggers `orders`
@@ -506,7 +509,9 @@ CREATE TABLE `order_details` (
 --
 
 INSERT INTO `order_details` (`order_detail_id`, `order_id`, `product_id`, `quantity`, `price`, `farmer_price`, `admin_price`, `profit_per_unit`) VALUES
-(58, 55, 19, 2, 214.00, 200.00, 214.00, 14.00);
+(58, 55, 19, 2, 214.00, 200.00, 214.00, 14.00),
+(64, 60, 24, 10, 26.55, 25.00, 26.55, 1.55),
+(65, 61, 19, 2, 214.00, 200.00, 214.00, 14.00);
 
 -- --------------------------------------------------------
 
@@ -584,12 +589,9 @@ CREATE TABLE `products` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `status` enum('pending','approved','rejected') DEFAULT 'pending',
   `admin_notes` text DEFAULT NULL,
-  `approved_price` decimal(10,2) DEFAULT NULL,
   `admin_id` int(11) DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1,
   `deleted_at` timestamp NULL DEFAULT NULL,
-  `created_by` int(11) DEFAULT NULL,
-  `updated_by` int(11) DEFAULT NULL,
   `approval_status` enum('pending','approved','rejected') DEFAULT 'pending',
   `admin_price` decimal(10,2) DEFAULT NULL,
   `commission_rate` decimal(5,2) DEFAULT 5.00 COMMENT 'Commission percentage (5-10%)',
@@ -602,10 +604,12 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `farmer_id`, `product_name`, `description`, `price`, `quantity`, `total_stock`, `sold_quantity`, `category`, `category_id`, `image`, `unit`, `created_at`, `updated_at`, `status`, `admin_notes`, `approved_price`, `admin_id`, `is_active`, `deleted_at`, `created_by`, `updated_by`, `approval_status`, `admin_price`, `commission_rate`, `approved_by`, `approved_at`, `rejection_reason`) VALUES
-(19, 10, 'apple', '', 200.00, 198, 200, 2, 'Fruits', NULL, NULL, 'kg', '2026-01-14 10:26:24', '2026-02-08 11:34:16', 'pending', NULL, NULL, NULL, 1, NULL, NULL, NULL, 'approved', 214.00, 7.00, NULL, NULL, NULL),
-(20, 10, 'radish', 'fresh radish', 100.00, 99, 99, 0, 'Vegetables', NULL, '698c386a1580d.png', 'kg', '2026-02-08 12:30:38', '2026-02-11 09:19:32', 'pending', NULL, NULL, NULL, 1, NULL, NULL, NULL, 'approved', 105.00, 5.00, 1, '2026-02-11 15:04:32', NULL),
-(22, 10, 'apple', 'local apple', 250.00, 301, 301, 0, 'Fruits', NULL, '698c77edbe6ac.png', 'kg', '2026-02-11 12:37:01', '2026-02-11 12:45:48', 'pending', NULL, NULL, NULL, 1, NULL, NULL, NULL, 'approved', 262.50, 5.00, 1, '2026-02-11 18:30:21', NULL);
+INSERT INTO `products` (`product_id`, `farmer_id`, `product_name`, `description`, `price`, `quantity`, `total_stock`, `sold_quantity`, `category`, `category_id`, `image`, `unit`, `created_at`, `updated_at`, `status`, `admin_notes`, `admin_id`, `is_active`, `deleted_at`, `approval_status`, `admin_price`, `commission_rate`, `approved_by`, `approved_at`, `rejection_reason`) VALUES
+(19, 10, 'apple', '', 200.00, 196, 200, 2, 'Fruits', NULL, NULL, 'kg', '2026-01-14 10:26:24', '2026-02-11 16:15:35', 'pending', NULL, NULL, 1, NULL, 'approved', 214.00, 7.00, NULL, NULL, NULL),
+(20, 10, 'radish', 'fresh radish', 100.00, 99, 99, 0, 'Vegetables', NULL, '698c386a1580d.png', 'kg', '2026-02-08 12:30:38', '2026-02-11 09:19:32', 'pending', NULL, NULL, 1, NULL, 'approved', 105.00, 5.00, 1, '2026-02-11 15:04:32', NULL),
+(22, 10, 'apple', 'local apple', 250.00, 301, 301, 0, 'Fruits', NULL, '698c77edbe6ac.png', 'kg', '2026-02-11 12:37:01', '2026-02-11 12:45:48', 'pending', NULL, NULL, 1, NULL, 'approved', 262.50, 5.00, 1, '2026-02-11 18:30:21', NULL),
+(23, 15, 'Eggs', 'Eggs from Local chicken. Being sold in Dozens.', 300.00, 150, 150, 0, 'Other', NULL, '698ca03532139.jpg', 'dozen', '2026-02-11 15:28:53', '2026-02-11 15:36:01', 'pending', NULL, NULL, 1, NULL, 'approved', 318.00, 6.00, 1, '2026-02-11 21:21:01', NULL),
+(24, 15, 'Chicks', 'Chicks of Local Chickens.', 25.00, 40, 50, 0, 'Other', NULL, '698ca16de9377.png', 'piece', '2026-02-11 15:34:05', '2026-02-11 15:46:07', 'pending', NULL, NULL, 1, NULL, 'approved', 26.55, 6.20, 1, '2026-02-11 21:20:43', NULL);
 
 -- --------------------------------------------------------
 
@@ -826,7 +830,8 @@ ALTER TABLE `products`
   ADD KEY `fk_product_category` (`category_id`),
   ADD KEY `idx_approval_status` (`approval_status`),
   ADD KEY `idx_approved_by` (`approved_by`),
-  ADD KEY `idx_stock` (`quantity`,`total_stock`);
+  ADD KEY `idx_stock` (`quantity`,`total_stock`),
+  ADD KEY `idx_products_status` (`approval_status`);
 
 --
 -- Indexes for table `product_price_history`
@@ -859,19 +864,19 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `admin_revenue`
 --
 ALTER TABLE `admin_revenue`
-  MODIFY `revenue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `revenue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `buyer`
 --
 ALTER TABLE `buyer`
-  MODIFY `buyer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `buyer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -889,25 +894,25 @@ ALTER TABLE `commission_settings`
 -- AUTO_INCREMENT for table `farmer`
 --
 ALTER TABLE `farmer`
-  MODIFY `farmer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `farmer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `notification_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `order_details`
 --
 ALTER TABLE `order_details`
-  MODIFY `order_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `order_detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `order_status_history`
@@ -919,7 +924,7 @@ ALTER TABLE `order_status_history`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `product_price_history`
@@ -955,7 +960,7 @@ ALTER TABLE `cart`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`buyer_id`) REFERENCES `buyer` (`buyer_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`buyer_id`) REFERENCES `buyer` (`buyer_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `order_details`
