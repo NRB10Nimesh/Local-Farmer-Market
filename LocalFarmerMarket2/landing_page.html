@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Market - Fresh Produce Directly from Farmers</title>
+    <link rel="stylesheet" href="assets/css/modern.css">
+    <style>
+        /* Landing Page Styles */
+        .hero-section {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+            padding: 120px 40px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-section h1 {
+            font-size: var(--text-4xl);
+            margin-bottom: var(--space-lg);
+            color: white;
+        }
+
+        .hero-section p {
+            font-size: var(--text-xl);
+            margin-bottom: var(--space-3xl);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: var(--space-lg);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--space-3xl);
+        }
+
+        .hero-cta .btn {
+            min-width: 200px;
+            padding: var(--space-lg) var(--space-2xl);
+            font-size: var(--text-base);
+        }
+
+        .features-section {
+            padding: var(--space-3xl) 40px;
+            background: var(--bg-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-3xl);
+            margin-top: var(--space-3xl);
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: var(--space-2xl);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-lg);
+        }
+
+        .feature-card h3 {
+            margin-bottom: var(--space-md);
+        }
+
+        .feature-card p {
+            color: var(--gray-600);
+            margin: 0;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: var(--space-3xl) 40px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            color: white;
+            margin-bottom: var(--space-lg);
+        }
+
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: var(--space-2xl);
+            font-size: var(--text-lg);
+        }
+
+        .auth-nav {
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: var(--space-lg) var(--space-2xl);
+            z-index: 1000;
+            display: flex;
+            gap: var(--space-md);
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown > .btn {
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            min-width: 200px;
+            margin-top: var(--space-sm);
+            z-index: var(--z-dropdown);
+            overflow: hidden;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: var(--space-md) var(--space-lg);
+            color: var(--gray-900);
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .dropdown-menu a:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu a:hover {
+            background: var(--bg-secondary);
+            color: var(--primary);
+            padding-left: var(--space-2xl);
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-section {
+                padding: 80px 20px;
+                min-height: auto;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .auth-nav {
+                gap: var(--space-sm);
+                padding: var(--space-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div class="auth-nav">
+        <div class="dropdown">
+            <button class="btn primary small">Sign In</button>
+            <div class="dropdown-menu">
+                <a href="login_farmer.php">👨‍🌾 Farmer Login</a>
+                <a href="login_buyer.php">🛒 Buyer Login</a>
+                <a href="login.php">⚙️ Admin Login</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn secondary small">Sign Up</button>
+            <div class="dropdown-menu">
+                <a href="signup_farmer.php">👨‍🌾 Become a Farmer</a>
+                <a href="signup_buyer.php">🛒 Join as Buyer</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <h1>🌾 Farmer Market</h1>
+        <p>Fresh Products Directly from Local Farmers to Your Table</p>
+        
+        <div class="hero-cta">
+            <a href="signup_farmer.php" class="btn primary">Start Selling</a>
+            <a href="signup_buyer.php" class="btn outline" style="background: white; color: #16a34a; border: 2px solid white;">Start Shopping</a>
+        </div>
+
+        <div style="font-size: 4rem; margin-top: var(--space-2xl);">
+            🌽 🥕 🥦 🍅 🍌
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h2 style="text-align: center; margin-bottom: var(--space-lg);">Why Choose Farmer Market?</h2>
+            <p style="text-align: center; color: var(--gray-600); margin-bottom: var(--space-3xl);">
+                Connect directly with local farmers and enjoy fresh, organic produce at fair prices
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🌱</div>
+                    <h3>100% Fresh</h3>
+                    <p>Products sourced directly from local farms, picked fresh daily</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Fair Prices</h3>
+                    <p>No middlemen. Direct transactions mean better prices for everyone</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Support Local</h3>
+                    <p>Support local farmers and strengthen your community economy</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>Easy Ordering</h3>
+                    <p>Simple and secure platform for farmers and buyers to connect</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Quality Guaranteed</h3>
+                    <p>All products verified by our admin team for highest quality</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Fast Delivery</h3>
+                    <p>Quick and reliable delivery to ensure freshness at your doorstep</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h2>Ready to Get Started?</h2>
+            <p>Join thousands of farmers and buyers building a healthier, more sustainable local food system</p>
+
+            <div style="display: flex; gap: var(--space-lg); justify-content: center; flex-wrap: wrap;">
+                <a href="signup_farmer.php" class="btn primary large" style="background: white; color: #2563eb; border: none;">
+                    👨‍🌾 Register as Farmer
+                </a>
+                <a href="signup_buyer.php" class="btn primary large" style="border: 2px solid white; background: transparent;">
+                    🛒 Register as Buyer
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--gray-900); color: white; padding: var(--space-2xl); text-align: center;">
+        <p style="margin: 0;">&copy; 2025 Local Farmer Market. All Rights Reserved.</p>
+        <p style="margin: var(--space-sm) 0 0 0; font-size: var(--text-sm); color: var(--gray-400);">
+            Connecting farmers and communities through fresh, sustainable agriculture
+        </p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+/* Profile page styles (updated to match Farmer profile look) */
+.profile-container {
+    max-width: 1200px;
+    margin: 18px auto;
+    padding: 28px 20px;
+}
+
+/* Header card */
+.profile-header {
+    padding: 0;
+    overflow: hidden;
+}
+.profile-header-inner {
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:20px;
+    background: linear-gradient(135deg, #2b7a4b 0%, #27ae60 100%);
+    color: white;
+    border-radius:8px;
+}
+.profile-avatar {
+    width:84px;
+    height:84px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    flex:0 0 84px;
+}
+.profile-meta { flex:1; }
+.profile-name { margin:0; font-size:22px; font-weight:700; }
+.profile-meta .small-muted { opacity:0.95; margin-top:6px; }
+.profile-actions { text-align:right; }
+.profile-actions .member-since { font-weight:600; }
+
+.profile-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr 360px;
+    align-items: start;
+}
+
+@media (max-width: 920px) {
+    .profile-grid { grid-template-columns: 1fr; }
+}
+
+/* Reduce top padding for profile page to bring header card closer to the site header */
+.main-wrapper.profile-page .main-content { padding-top: 12px !important; }
+
+.card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #eef2f1;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.03);
+}
+
+.page-title { margin-top:0; margin-bottom: 18px; font-size: 20px; }
+
+.profile-card .profile-form { display:block; }
+
+.form-row { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; margin-bottom: 12px; }
+.form-row .col label { display:block; font-weight:600; margin-bottom:6px; }
+.form-row .col input { width:100%; padding: 10px; border:1px solid #e6ece8; border-radius:6px; }
+
+.form-group label { display:block; font-weight:600; margin-bottom:6px; }
+.form-group textarea, .card textarea { width:100%; padding:10px; border:1px solid #e6ece8; border-radius:6px; }
+
+.form-actions { display:flex; justify-content:flex-start; margin-top:12px; }
+.form-actions .btn { padding:10px 16px; border-radius:6px; }
+
+/* Recent orders list */
+.card .small-muted { color:#6c756d; font-size:13px; }
+.card .card-sub { margin-top:12px; }
+
+/* Account stats */
+.stat-value { font-size:20px; font-weight:700; color:#1f2e24; margin-top:6px; }
+
+/* small tidy boxes */
+.card > div[style*="background:#f9fffb"] { border-radius:8px; padding:12px; }
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+    .profile-container { padding: 18px 12px; }
+}
+

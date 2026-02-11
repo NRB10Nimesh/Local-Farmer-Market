@@ -1,0 +1,397 @@
+/* ================================================
+   MODERN AUTHENTICATION PAGES CSS
+   ================================================ */
+
+:root {
+  --primary: #16a34a;
+  --primary-dark: #15803d;
+  --secondary: #2563eb;
+  --secondary-dark: #1d4ed8;
+  --danger: #ef4444;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --gray-900: #111827;
+  --gray-700: #374151;
+  --gray-600: #4b5563;
+  --gray-500: #6b7280;
+  --gray-400: #9ca3af;
+  --gray-200: #e5e7eb;
+  --gray-100: #f3f4f6;
+  --radius-lg: 12px;
+  --radius-2xl: 20px;
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.form-container {
+    background: white;
+    padding: 40px;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-xl);
+    width: 100%;
+    max-width: 450px;
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+h2.buyer {
+    color: var(--secondary);
+}
+
+h2.farmer {
+    color: var(--primary);
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--gray-600);
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+}
+
+.message {
+    padding: 12px 16px;
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.error-message {
+    background: #fee2e2;
+    color: #7f1d1d;
+    border-left: 4px solid var(--danger);
+}
+
+.success-message {
+    background: #d1fae5;
+    color: #065f46;
+    border-left: 4px solid var(--success);
+}
+
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--gray-900);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: white;
+    color: var(--gray-900);
+}
+
+input:hover, textarea:hover {
+    border-color: var(--gray-300);
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+button.buyer {
+    background: linear-gradient(135deg, var(--secondary), #3b82f6);
+    color: white;
+}
+
+button.buyer:hover {
+    background: linear-gradient(135deg, var(--secondary-dark), #1e40af);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+}
+
+button.farmer {
+    background: linear-gradient(135deg, var(--primary), #4ade80);
+    color: white;
+}
+
+button.farmer:hover {
+    background: linear-gradient(135deg, var(--primary-dark), #22c55e);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(22, 163, 74, 0.3);
+}
+
+.link {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--gray-600);
+    font-size: 0.9rem;
+}
+
+.link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.link a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.validation-hint {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    margin-top: 4px;
+    display: none;
+}
+
+.validation-hint.show {
+    display: block;
+}
+
+.password-strength {
+    height: 4px;
+    background: var(--gray-200);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    background: var(--danger);
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.password-strength-bar.weak {
+    width: 33%;
+    background: var(--danger);
+}
+
+.password-strength-bar.medium {
+    width: 66%;
+    background: var(--warning);
+}
+
+.password-strength-bar.strong {
+    width: 100%;
+    background: var(--success);
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 30px 20px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    input, textarea, button {
+        font-size: 16px; /* Prevents iOS zoom */
+    }
+}
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+input.farmer:focus, textarea.farmer:focus {
+    border-color: #4caf50;
+}
+
+input.buyer:focus, textarea.buyer:focus {
+    border-color: #2196f3;
+}
+
+input.error, textarea.error {
+    border-color: #f44336;
+}
+
+input.valid, textarea.valid {
+    border-color: #4caf50;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.validation-hint {
+    font-size: 0.8rem;
+    color: #757575;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.validation-hint.error {
+    color: #f44336;
+}
+
+.validation-hint.valid {
+    color: #4caf50;
+}
+
+.validation-hint.valid::before {
+    content: "✓";
+}
+
+.password-strength {
+    margin-top: 8px;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+}
+
+.strength-weak { background: #f44336; width: 33%; }
+.strength-medium { background: #ff9800; width: 66%; }
+.strength-strong { background: #4caf50; width: 100%; }
+
+button {
+    width: 100%;
+    padding: 14px;
+    color: white;
+    border: none;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+button.farmer {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+}
+
+button.buyer {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.link a {
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.link a.farmer {
+    color: #4caf50;
+}
+
+.link a.buyer {
+    color: #2196f3;
+}
+
+.link a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 30px 20px;
+    }
+    
+    h2 {
+        font-size: 1.6rem;
+    }
+}
