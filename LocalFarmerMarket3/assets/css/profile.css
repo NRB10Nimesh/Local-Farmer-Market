@@ -1,0 +1,151 @@
+/* Profile page styles — header, avatar and form spacing for farmer/buyer */
+.profile-container {
+    max-width: 1200px;
+    margin: 18px auto;
+    padding: 28px 20px;
+}
+
+/* Header card styles (full-card gradient + avatar) */
+.profile-header {
+    /* make the entire card colored instead of only the inner strip */
+    padding: 0;
+    overflow: visible;
+    margin-bottom: 24px;
+}
+/* color the whole card container so the circled area becomes colored */
+.card.profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 22px 24px; /* keep same spacing as earlier visual */
+    border-radius: 12px;
+    border: 0;
+    box-shadow: 0 8px 28px rgba(6,11,15,0.06);
+}
+.profile-header-inner {
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:0; /* inner now transparent and uses outer card padding */
+    background: transparent;
+    color: inherit;
+    border-radius:inherit;
+    width:100%;
+}
+.profile-avatar {
+    width:84px;
+    height:84px;
+    border-radius:50%;
+    background: #ffffff; /* white avatar on colored card */
+    border: none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.2rem;
+    flex:0 0 84px;
+    color: #374151; /* icon color when avatar is white */
+    overflow:hidden;
+    box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+}
+.profile-avatar .material-icons { display:block; font-size:32px; line-height:1; color: #374151; }
+/* Initial (text) fallback inside avatar */
+.profile-avatar .profile-initial { display:block; font-size:26px; line-height:1; font-weight:800; color:#000000; user-select:none; letter-spacing:0.2px; }
+.profile-avatar .profile-initial::first-letter { text-transform:uppercase; }
+.profile-meta { flex:1; }
+.profile-name { margin:0; font-size:22px; font-weight:700; }
+.profile-meta .small-muted { opacity:0.95; margin-top:6px; }
+/* ensure small-muted inside header remains readable on the colored background */
+.profile-header-inner .small-muted { color: rgba(255,255,255,0.92); }
+/* override for profile-specific subinfo (phone / address) — show as bold black text */
+.profile-header-inner .profile-subinfo { color: #000000; font-weight:700; }
+/* stronger, page-scoped rule to ensure Buyer/Farmer header subinfo is black even when other styles load later */
+.main-wrapper.profile-page .profile-header-inner .profile-subinfo { color: #000000 !important; font-weight:700 !important; }
+
+/* make contact/address in header visually match the 'Member since' block */
+.profile-subinfo { font-weight:700; color: #000000; display:flex; align-items:center; gap:8px; font-size:14px; }
+.profile-subinfo .material-icons { font-size:18px; opacity:0.95; }
+
+.profile-actions { text-align:right; }
+.profile-actions .member-since { font-weight:600; }
+
+.profile-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr 360px;
+    align-items: start;
+}
+
+@media (max-width: 920px) {
+    .profile-grid { grid-template-columns: 1fr; }
+}
+
+/* Reduce top padding for profile page to bring header card closer to the site header */
+.main-wrapper.profile-page .main-content { padding-top: 12px !important; }
+
+.card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #eef2f1;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.03);
+}
+
+.page-title { margin-top:0; margin-bottom: 18px; font-size: 20px; }
+
+.profile-card .profile-form { display:block; }
+
+.form-row { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; margin-bottom: 12px; }
+.form-row .col label { display:block; font-weight:600; margin-bottom:6px; }
+.form-row .col input { width:100%; padding: 10px; border:1px solid #e6ece8; border-radius:6px; }
+
+.form-group label { display:block; font-weight:600; margin-bottom:6px; }
+.form-group textarea, .card textarea { width:100%; padding:10px; border:1px solid #e6ece8; border-radius:6px; }
+
+.form-actions { display:flex; justify-content:flex-start; margin-top:12px; }
+.form-actions .btn { padding:10px 16px; border-radius:6px; }
+
+/* Recent orders list */
+.card .small-muted { color:#6c756d; font-size:13px; }
+.card .card-sub { margin-top:12px; }
+
+/* Account stats */
+.stat-value { font-size:20px; font-weight:700; color:#1f2e24; margin-top:6px; }
+
+/* Profile form inputs — increased padding and ensured full width for better touch/visual comfort */
+.profile-card input[type="text"],
+.profile-card input[type="email"],
+.profile-card input[type="number"],
+.profile-card textarea,
+.profile-card input[type="tel"] {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid #e6ece8;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+}
+.profile-card textarea { min-height: 110px; resize: vertical; }
+
+/* Reusable padded-card utility used across profile pages */
+.card--spacious { padding: 24px !important; }
+
+/* Stat box components (used on profile page) */
+.stat-box { padding:18px; border-radius:10px; display:block; }
+.stat-box .stat-label { font-weight:600; color:#374151; margin-bottom:6px; }
+.stat-box--revenue { background:#eff6ff; border-left:4px solid #3b82f6; }
+.stat-box--completed { background:#d1fae5; border-left:4px solid #16a34a; }
+
+.quick-stat { padding:16px; border-radius:8px; display:block; }
+.quick-stat .stat-label { font-weight:600; color:#374151; }
+.quick-stat--warning { background:#fef3c7; }
+.quick-stat--info { background:#dbeafe; }
+.quick-stat--muted { background:#e0e7ff; }
+
+/* small tidy boxes */
+.card > div[style*="background:#f9fffb"] { border-radius:8px; padding:12px; }
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+    .profile-container { padding: 18px 12px; }
+}
+
